@@ -12,7 +12,7 @@ const MailingsSchema = new Schema({
     totalSpent: Number
 })
 
-MailingsSchema.updateData = async function (data) {
+MailingsSchema.statics.updateData = async function (data) {
     try {
         const result = await this.findOneAndUpdate(
             { mailingDate: data.mailingDate, mailingId: data.mailingId },

@@ -6,6 +6,11 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import bodyParser from 'body-parser'
 
+import masterUpdateData from './src/crons/masterCron.js'
+
+
+masterUpdateData(new Date, new Date)
+
 dotenv.config()
 
 const MONGO_URL = process.env.DATABASE_URL

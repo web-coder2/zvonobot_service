@@ -9,7 +9,7 @@ const finishedMailingsSchema = new Schema({
     mailingStatus: String
 })
 
-finishedMailingsSchema.static.getByDate = async function(gte, lte) {
+finishedMailingsSchema.statics.getByDate = async function(gte, lte) {
     try {
         const data = await this.find({
             mailingDate: {
