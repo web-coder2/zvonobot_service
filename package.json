@@ -1,0 +1,12 @@
+{
+  "name": "zvonobot_service",
+  "version": "1.0.0",
+  "description": "переписываю сервис звонобота",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "cd server && npm run dev"
+  },
+  "author": "w3b-c0d3r",
+  "license": "ISC"
+}
