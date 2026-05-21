@@ -44,4 +44,19 @@ LeadsSchema.statics.updateLead = async function (data) {
     }
 }
 
+LeadsSchema.statics.getByDate = async function (gte, lte) {
+    try {
+        const data = await this.find({
+            datedAt: {
+                $gte: gte,
+                $lte: lte
+            }
+        })
+        return data
+    } catch (e) {
+        console.log(`ошибка при получение лидов за дату ${e.message}`)
+        return null
+    }
+}
+
 export default model('LeadsSchema', LeadsSchema)
