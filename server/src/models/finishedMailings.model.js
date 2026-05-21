@@ -23,4 +23,19 @@ finishedMailingsSchema.statics.getByDate = async function(gte, lte) {
     }
 }
 
+finishedMailingsSchema.statics.update = async function(data) {
+    try {
+        const newFinishedMailing = new this({
+            mailingDate: data.mailingDate,
+            mailingId: data.mailingId,
+            mailingName: data.mailingName,
+            mailingStatus: data.mailingStatus,
+        })
+        const result = newFinishedMailing.save()
+        return result
+    } catch (e) {
+        console.log(`ошибка сохранения заврешеной расылки ${e.message}`)
+    }
+}
+
 export default model('finishedMailingsSchema', finishedMailingsSchema)

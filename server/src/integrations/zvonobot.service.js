@@ -97,34 +97,31 @@ async function getZvonobotMailings(token, gte, lte) {
 }
 
 // обработка расылки
-async function prepaingMailing(mailing) {
+async function prepaingMailing(mailing, token) {
     try {
 
-        paginationCallsOfMailing = await axios.post('https://lk.zvonobot.ru/api/calls/getPagination', {
+        const paginationCallsOfMailing = await axios.post('https://lk.zvonobot.ru/api/calls/getPagination', {
             deliveryId: mailing.mailingId,
             pageCapacity: 100,
             page: 1,
             linkedFlag: 0
         }, {
-            headers: { "authorization": "Bearer " + ZVONOBOT_TOKEN }
+            headers: { "authorization": "Bearer " + token }
         })
 
         let lastPage = paginationCallsOfMailing.data.data.lastPage
 
         mailing.leadsInMailing = []
-        mailing.totalCalls = 0
-        mailing.totalLeads = 0
-        mailing.totalSpent = 0
 
         for (let page = 1; page <= lastPage; page++) {
             try {
-                mailingsCalls = await axios.post('https://lk.zvonobot.ru/api/calls/getPagination', {
+                const mailingsCalls = await axios.post('https://lk.zvonobot.ru/api/calls/getPagination', {
                     deliveryId: mailing.mailingId,
                     pageCapacity: 100,
                     page: page,
                     linkedFlag: 0
                 }, {
-                    headers: { "authorization": "Bearer " + ZVONOBOT_TOKEN }
+                    headers: { "authorization": "Bearer " + token }
                 })
 
                 mailingsCalls.data.data.data.forEach((call) => {
@@ -147,27 +144,6 @@ async function prepaingMailing(mailing) {
                             statuses: []
                         }
     
-                        // let phoneInEnvyBoxPhones = leadsFromEnvy.find((item) => {
-                        //     return item.phone === callPhone
-                        // })
-    
-                        // if (mailing.isAutoMailing === true) {
-                        //     stage = 'Авто'
-                        //     stageCode = 'auto',
-                        //     stageColor = 'rgb(240, 230, 220)'
-                        //     leadPrice = 5
-                        //     isAuto = true
-                        // } else if (mailing.isAutoMailing === false) {
-                        //     if (phoneInEnvyBoxPhones) {
-                        //         stage = phoneInEnvyBoxPhones.stage
-                        //         stageCode = phoneInEnvyBoxPhones.stageCode
-                        //         stageColor = phoneInEnvyBoxPhones.stageColor
-                        //         leadPrice = phoneInEnvyBoxPhones.leadPrice
-                        //         isAuto = false
-                        //     }
-    
-                        // }
-    
                         mailing.leadsInMailing.push(leadObject)
                         mailing.totalLeads += 1
                     }
@@ -187,7 +163,7 @@ async function prepaingMailing(mailing) {
         return mailing
 
     } catch (e) {
-        console.log(`ошибка обработка расылки`)
+        console.log(`ошибка обработка расылки ${e.message}`)
     }
 }
 
