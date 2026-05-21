@@ -43,6 +43,7 @@ async function getLeads(token, gte, lte) {
                 _limit: 0
             }
         })
+        return response.data.data
     } catch (e) {
         console.log(`ошибка получения лидов из резиденции ${e.message}`)
     }

@@ -2,7 +2,7 @@ import axios from "axios"
 import dayjs from "dayjs"
 import https from "https"
 
-async function getUIScalls(token, gte, lte) {
+async function getUIScalls(token, gte, lte, users) {
     try {
         let uisCalls = []
 
@@ -16,9 +16,17 @@ async function getUIScalls(token, gte, lte) {
         })
 
         response.data.data.forEach((call) => {
+
+            let userKey = users.find((item) => {
+                return item.employe === call.employeeId
+            })
+
+            let broker = userKey ? userKey.user : 'Не определено'
+
             uisCalls.push({
                 contactPhone: call.contactPhone,
-                employeeId : call.employeeId
+                employeeId : call.employeeId,
+                broker: broker,
             })
         })
 
@@ -28,18 +36,4 @@ async function getUIScalls(token, gte, lte) {
     }
 }
 
-function setBrokersUIScalls(users, calls) {
-    return users.map(user => {
-        const uisEmployeId = uis.employe
-        const userCalls = calls.filter(call => uisEmployeId === parseInt(call.employeeId)).map(call => (call.contactPhone))
-        
-        return {
-            name: user.name,
-            employe: uis.employe,
-            uisCalls: userCalls
-        }
-
-    })
-}
-
-export { getUIScalls, setBrokersUIScalls }
+export { getUIScalls }
