@@ -29,14 +29,15 @@ LeadsSchema.statics.updateLead = async function (data) {
                 $set: {
                     mailingName: data.mailingName,
                     mailingId: data.mailingId,
-                    leadCode: data.leadCode,
-                    leadPrice: data.leadPrice,
+                    finallyLeadCode: data.finallyLeadCode,
+                    finallyLeadPrice: data.finallyLeadPrice,
                     isResidence: data.isResidence,
                     broker: data.broker,
                     offerPrice: data.offerPrice,
                     statuses: data.statuses,
                 }
-            }
+            },
+            { upsert: true }
         )
         return result
     } catch (e) {

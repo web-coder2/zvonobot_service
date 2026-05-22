@@ -4,6 +4,7 @@ import dayjs from "dayjs"
 import tokenModel from '../models/tokens.model.js'
 import mailingsModel from "../models/mailings.model.js"
 import finishedMailingsModel from "../models/finishedMailings.model.js"
+import leadsModel from "../models/leads.model.js"
 
 import { getZvonobotMailings, prepaingMailing } from '../integrations/zvonobot.service.js'
 import { getBrokers, getLeads } from "../integrations/residence.service.js"
@@ -26,7 +27,7 @@ async function masterUpdateData(gte, lte) {
         // console.log('Список активных ддля обработки расылок ....', zvonobotMailings)
 
         // маисив 4 расылок дял теста сервиса чтобы долго не ждать
-        let shortMailingsArray = zvonobotMailings.slice(1, 13)
+        let shortMailingsArray = zvonobotMailings.slice(1, 10)
 
         const brokers = await getBrokers(residenceToken)
         const uisCalls = await getUIScalls(uisToken, gte, lte, brokers)
@@ -95,7 +96,10 @@ async function masterUpdateData(gte, lte) {
 
         })
 
-        // TODO написать дальше модуль с EnvyBox и делать сопоставление с лидом
+        for (let lead of zvonobotMailingsLeads) {
+            const result = await leadsModel.updateLead(lead)
+            console.log(result)
+        }
 
         console.log('Список всех лидов собраных из всех расылок .....', zvonobotMailingsLeads)
 

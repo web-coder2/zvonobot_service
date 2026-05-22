@@ -8,6 +8,8 @@ import bodyParser from 'body-parser'
 
 import masterUpdateData from './src/crons/masterCron.js'
 
+import leadsRouter from './src/routes/leads.router.js'
+import mailingRouter from './src/routes/mailings.router.js'
 
 masterUpdateData(new Date('2026-05-21'), new Date('2026-05-21'))
 
@@ -23,6 +25,9 @@ const server = express()
 
 server.use(bodyParser.json())
 server.use(cors())
+
+server.use('/api/leads', leadsRouter)
+server.use('/api/mailings', mailingRouter)
 
 async function startConnectToDB() {
     try {
