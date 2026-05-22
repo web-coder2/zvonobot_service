@@ -7,11 +7,11 @@ const LeadsSchema = new Schema({
     mailingName: String,
     mailingId: Number,
     phone: String,
-    leadCode: {
+    finallyLeadCode: {
         type: String,
         enum: ['base', 'new', 'auto']
     },
-    leadPrice: {
+    finallyLeadPrice: {
         type: Number,
         enum: [5, 10]
     },

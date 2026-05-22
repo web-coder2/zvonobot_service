@@ -2,6 +2,11 @@ import axios from "axios"
 import dayjs from "dayjs"
 import https from "https"
 
+
+//  { contactPhone: '79258825670', employeeId: '9114433', broker: null },
+//  { contactPhone: '79660770100', employeeId: '9349313', broker: null },
+//  { contactPhone: '79660770100', employeeId: '9349313', broker: null },
+
 async function getUIScalls(token, gte, lte, users) {
     try {
         let uisCalls = []
@@ -18,10 +23,10 @@ async function getUIScalls(token, gte, lte, users) {
         response.data.data.forEach((call) => {
 
             let userKey = users.find((item) => {
-                return item.employe === call.employeeId
+                return item.employeeId.toString() === call.employeeId
             })
 
-            let broker = userKey ? userKey.user : 'Не определено'
+            let broker = userKey ? userKey.user : null
 
             uisCalls.push({
                 contactPhone: call.contactPhone,

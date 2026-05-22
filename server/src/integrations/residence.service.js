@@ -9,14 +9,28 @@ async function getBrokers(token) {
             params: { 
                 _page: 1, 
                 _limit: 500,
+                _populate: 'rankId'
             }
         })
-        response.data.data.forEach((user) => {
+
+        let users = response.data.data
+        const notAllowedRanks = ['Админ', 'Уволен', 'Стажер']
+
+        users = users.filter((user) => {
+            return !notAllowedRanks.includes(user.rankId.name)
+        })
+
+        users.forEach((user) => {
             brokers.push({
-                user: user?.name,
-                employe: user?.integrations?.uis?.employeeId
+                user: user?.name ?? null,
+                employeeId: user?.integrations?.uis?.employeeId ?? null
             })
         })
+
+        brokers = brokers.filter((broker) => {
+            return broker.employeeId !== null
+        })
+
         return brokers
     } catch (e) {
         console.log('ошбика получения бркоеров из резиденции', e.message)

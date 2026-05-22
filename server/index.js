@@ -9,7 +9,7 @@ import bodyParser from 'body-parser'
 import masterUpdateData from './src/crons/masterCron.js'
 
 
-masterUpdateData(new Date, new Date)
+masterUpdateData(new Date('2026-05-21'), new Date('2026-05-21'))
 
 dotenv.config()
 
