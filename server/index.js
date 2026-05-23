@@ -11,8 +11,9 @@ import masterUpdateData from './src/crons/masterCron.js'
 import leadsRouter from './src/routes/leads.router.js'
 import mailingRouter from './src/routes/mailings.router.js'
 import minusesRoute from './src/routes/minuses.route.js'
+import trafficRoute from './src/routes/traffic.route.js'
 
-masterUpdateData(new Date('2026-05-21'), new Date('2026-05-21'))
+masterUpdateData(new Date(), new Date())
 
 dotenv.config()
 
@@ -30,6 +31,7 @@ server.use(cors())
 server.use('/api/leads', leadsRouter)
 server.use('/api/mailings', mailingRouter)
 server.use('/api/minuses', minusesRoute)
+server.use('/api/traffic', trafficRoute)
 
 async function startConnectToDB() {
     try {

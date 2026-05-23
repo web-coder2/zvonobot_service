@@ -44,6 +44,8 @@ minusesRoute.get('/byDate', async (req, res) => {
             }
         })
 
+        aggregatedData = Object.values(aggregatedData)
+
         res.status(200).json({ data: aggregatedData })
 
     } catch (e) {
