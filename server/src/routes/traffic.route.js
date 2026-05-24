@@ -41,7 +41,7 @@ async function getResultTotal(totalSpent, gte, lte, broker = null) {
 
     const daysCount = dayjs(lte).startOf('day').diff(dayjs(gte).startOf('day'), 'day') + 1
     const residenceToken = await tokensModel.getToken('residence')
-    const residenceLeads = await getLeads(residenceToken ,gte, lte)
+    const residenceLeads = await getLeads(residenceToken, gte, lte) || []
 
     let holdsSum = 0
 
@@ -86,12 +86,17 @@ trafficRoute.get('/getByDate', async (req, res) => {
 
         let totalCalls = 0
         let totalSpent = 0
+        let totalHold = 0
 
         console.log(mailingsByDate, '1@!#!@#!@#')
 
         mailingsByDate.forEach((mailing) => {
             totalCalls += mailing.totalCalls
             totalSpent += mailing.totalSpent
+        })
+
+        leadsByDate.forEach((lead) => {
+            totalHold += lead.offerPrice
         })
 
 
@@ -117,8 +122,8 @@ trafficRoute.get('/getByDate', async (req, res) => {
                 spent: 0
             },
             result: {
-                total: 0,
-                traffic: 0
+                total: getResultTotal(totalSpent, gte, lte),
+                traffic: getTotalResultByTraffic(totalHold, totalSpent, gte, lte)
             }
         }
 
@@ -150,14 +155,16 @@ trafficRoute.get('/getByDate', async (req, res) => {
         aggregatedData = Object.values(aggregatedData)
 
         aggregatedData.forEach((user) => {
-            total.inputs.count += user.countInputs
-            total.leads.count += user.countLeads
-            total.holds.count += user.countHold
+            total.inputs.count += user.countInputs || 0
+            total.leads.count += user.countLeads || 0
+            total.holds.count += user.countHold || 0
         })
 
         let spentToInput = total.calls.totalSpent / total.inputs.count
         let spentToLead = total.calls.totalSpent / total.leads.count
         let spentToHold = total.calls.totalSpent / total.holds.count
+
+        console.log(spentToInput, spentToLead, spentToHold)
 
         total.inputs.percent = Math.round((total.inputs.count / total.calls.count) * 100)
         total.leads.percent = Math.round((total.leads.count / total.inputs.count) * 100)
