@@ -21,6 +21,7 @@ minusesRoute.get('/byDate', async (req, res) => {
 
         let aggregatedData = {}
 
+        console.log(leadsByDate, '!!!!!!')
 
         leadsByDate.forEach((lead) => {
 
@@ -32,6 +33,10 @@ minusesRoute.get('/byDate', async (req, res) => {
                 aggregatedData[lead.broker].offerPrice += lead.offerPrice
                 aggregatedData[lead.broker].countHold += isIncludesHold ? 1 : 0,
                 aggregatedData[lead.broker].totalMinuses += lead.finallyLeadPrice
+                aggregatedData[lead.broker].countNew += lead.finallyLeadCode === 'new' ? 1 : 0
+                aggregatedData[lead.broker].countBase += lead.finallyLeadCode === 'base' ? 1 : 0
+                aggregatedData[lead.broker].countAuto += lead.finallyLeadCode === 'auto' ? 1 : 0
+
             } else {
                 aggregatedData[lead.broker] = {
                     broker: lead.broker,
@@ -40,6 +45,9 @@ minusesRoute.get('/byDate', async (req, res) => {
                     offerPrice: lead.offerPrice,
                     countHold: isIncludesHold ? 1 : 0,
                     totalMinuses: lead.finallyLeadPrice,
+                    countNew: lead.finallyLeadCode === 'new' ? 1 : 0,
+                    countBase: lead.finallyLeadCode === 'base' ? 1 : 0,
+                    countAuto: lead.finallyLeadCode === 'auto' ? 1 : 0,
                 }
             }
         })

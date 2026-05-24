@@ -51,6 +51,14 @@ server.get('/leads', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/leads.html'))
 })
 
+server.get('/minuses', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/minuses.html'))
+})
+
+server.get('/traffic', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/traffic.html'))
+})
+
 async function startConnectToDB() {
     try {
         const uri = `mongodb://${MONGO_USER}:${MONGO_PASS}@${MONGO_URL}:${MONGO_PORT}/${DATABASE_NAME}?authSource=admin`;

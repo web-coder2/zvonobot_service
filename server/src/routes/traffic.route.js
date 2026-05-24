@@ -70,22 +70,24 @@ trafficRoute.get('/getByDate', async (req, res) => {
     try {
         const { gte, lte } = req.query
 
-        const leadsByDate = leadsModel.find({
+        const leadsByDate = await leadsModel.find({
             datedAt: {
                 $gte: dayjs(gte).format('YYYY-MM-DD'),
                 $lte: dayjs(lte).format('YYYY-MM-DD'),
             }
         })
 
-        const mailingsByDate = mailingsModel.find({
+        const mailingsByDate = await mailingsModel.find({
             mailingDate: {
                 $gte: dayjs(gte).format('YYYY-MM-DD'),
                 $lte: dayjs(lte).format('YYYY-MM-DD'),
             }
         })
 
-        totalCalls = 0
-        totalSpent = 0
+        let totalCalls = 0
+        let totalSpent = 0
+
+        console.log(mailingsByDate, '1@!#!@#!@#')
 
         mailingsByDate.forEach((mailing) => {
             totalCalls += mailing.totalCalls
@@ -187,7 +189,14 @@ trafficRoute.get('/getByDate', async (req, res) => {
             })
         })
 
+        let trafficData = {
+            total: total,
+            brokers: brokers
+        }
+
         // TODO позже использовать эти функции для получения резульатат трафика и общего для брокера и тотал
+
+        res.status(200).json({ data: trafficData })
 
     } catch (e) {
         console.log(e.message)

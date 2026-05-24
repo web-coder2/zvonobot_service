@@ -2,12 +2,22 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8" />
-    <title>Zvonobot токены</title>
+    <title>Zvonobot лиды</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs/dayjs.min.js"></script>
 </head>
 <body>
+    <div class="navbar">
+        <h1>Zvonobot</h1>
+        <div class="nav-links">
+            <a href="/tokens">Токены</a>
+            <a href="/leads">Лиды</a>
+            <a href="/minuses">Минусы</a>
+            <a href="/traffic">Трафик</a>
+        </div>
+    </div>
+
     <div id="app">
         <h1>Лиды</h1>
         <div>
@@ -51,12 +61,48 @@
 </html>
 
 <style>
+
+    .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #2c3e50;
+        padding: 8px 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        height: 50px;
+    }
+
+    .navbar h1 {
+        color: #fff;
+        margin: 0;
+        font-size: 1.4em;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 15px;
+        background: transparent;
+    }
+
+    .nav-links a {
+        color: #ecf0f1;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-size: 0.9em;
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .nav-links a:hover {
+        background-color: rgba(236, 240, 241, 0.2);
+        box-shadow: 0 0 5px rgba(236, 240, 241, 0.3);
+    }
     
     body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f0f4f8;
         margin: 0;
-        padding: 20px;
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f6f8;
         color: #333;
     }
 
@@ -82,22 +128,19 @@
         color: #34495e;
     }
 
-    input[type="text"] {
+    #app input {
         padding: 10px 15px;
         margin-right: 10px;
-        border: 2px solid #ccc;
-        border-radius: 12px;
-        font-family: 'Arial', sans-serif;
-        font-size: 14px;
-        background-color: #fafafa;
-        transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1em;
+        width: 150px;
+        transition: border-color 0.3s, box-shadow 0.3s;
     }
 
-    input[type="text"]:focus {
-        border-color: #2980b9;
-        box-shadow: 0 0 8px rgba(41, 128, 185, 0.3);
-        outline: none;
-        background-color: #fff;
+    #app input:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
     }
 
     button {

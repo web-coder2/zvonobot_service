@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Zvonobot минусы</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs/dayjs.min.js"></script>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Zvonobot</h1>
+        <div class="nav-links">
+            <a href="/tokens">Токены</a>
+            <a href="/leads">Лиды</a>
+            <a href="/minuses">Минусы</a>
+            <a href="/traffic">Трафик</a>
+        </div>
+    </div>
+    
+    <div id="app">
+        <h1>Минусы</h1>
+        <input placeholder="gte" v-model="gte">
+        <input placeholder="lte" v-model="lte">
+        <button @click="getMinusesData">Искать</button>
+        <div>
+            <h3>Все Минусы</h3>
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Брокер</th>
+                            <th>Кол-во входов</th>
+                            <th>Кол-во трансферов</th>
+                            <th>Кол-во холдов</th>
+                            <th>Оффер</th>
+                            <th>Минусы</th>
+                            <th>new</th>
+                            <th>base</th>
+                            <th>auto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(minuse, idx) in minusesTable">
+                            <td>{{ minuse.broker }}</td>
+                            <td>{{ minuse.countInputs }}</td>
+                            <td>{{ minuse.countLeads }}</td>
+                            <td>{{ minuse.countHold }}</td>
+                            <td>{{ minuse.offerPrice }}</td>
+                            <td>{{ minuse.totalMinuses }}</td>
+                            <td>{{ minuse.countNew }}</td>
+                            <td>{{ minuse.countBase }}</td>
+                            <td>{{ minuse.countAuto }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<style>
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #2c3e50;
+    padding: 10px 30px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar h1 {
+    color: #fff;
+    margin: 0;
+    font-size: 1.8em;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: #ecf0f1;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: background-color 0.3s, transform 0.3s;
+    font-size: 1em;
+}
+
+.nav-links a:hover {
+    background-color: rgba(236, 240, 241, 0.2);
+    transform: scale(1.05);
+}
+
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f6f8;
+    color: #333;
+}
+
+#app {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+#app h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    font-size: 2em;
+}
+
+#app input {
+    padding: 10px 15px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    width: 150px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+#app input:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
+#app button {
+    padding: 10px 20px;
+    background-color: #2980b9;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+#app button:hover {
+    background-color: #3498db;
+    transform: scale(1.05);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+thead {
+    background-color: #34495e;
+    color: #fff;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 0.95em;
+}
+
+tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+@media (max-width: 768px) {
+    #app {
+        padding: 15px;
+    }
+    #app input {
+        width: 100px;
+        margin-bottom: 10px;
+    }
+    #app button {
+        width: 100%;
+    }
+    .nav-links {
+        flex-direction: column;
+        align-items: flex-end;
+    }
+}
+
+</style>
+
+
+<script>
+
+    const app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                gte: dayjs(new Date).format('YYYY-MM-DD'),
+                lte: dayjs(new Date).format('YYYY-MM-DD'),
+                minusesTable: [],
+                apiUrl: 'http://localhost:3000/api/minuses/'
+            }
+        },
+        methods: {
+            async getMinusesData() {
+                try {
+                    const response = await axios.get(`${this.apiUrl}byDate`, {
+                        params: {
+                            gte: this.gte,
+                            lte: this.lte
+                        }
+                    })
+                    this.minusesTable = response.data.data
+                } catch (e) {
+                    console.log(e.message)
+                }
+            }
+        }
+    })
+
+</script>
