@@ -2,7 +2,7 @@ import { Router } from "express"
 import dayjs from "dayjs"
 import axios from "axios"
 
-import leadsModel from "../models/leads.model"
+import leadsModel from "../models/leads.model.js"
 
 const minusesRoute = Router()
 

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Zvonobot токены</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs/dayjs.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h1>Токены</h1>
+        <div>
+            <h3>Все токены</h3>
+            <div v-for="(token) in tokens">
+                <p><span>{{ token.service }}</span> {{ token.token }}</p>
+            </div>
+        </div>
+        <div>
+            <h3>Обновить токен</h3>
+            <input v-model="editService" placeholder="service">
+            <input v-model="editSelfToken" placeholder="token">
+            <button @click="updateToken">обновить</button>
+        </div>
+    </div>
+</body>
+</html>
+
+<style>
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f4f8;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    font-size: 2.5em;
+}
+
+#app > div {
+    background-color: #ffffff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#app > div:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #34495e;
+}
+
+.token {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f9f9f9;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+    transition: background-color 0.2s;
+}
+
+.token:hover {
+    background-color: #eef1f5;
+}
+
+.token p {
+    margin: 0;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    color: #2c3e50;
+}
+
+.token span {
+    font-weight: bold;
+    color: #2980b9;
+}
+
+input {
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: calc(50% - 22px);
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+input:focus {
+    border-color: #2980b9;
+    outline: none;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #2980b9;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #3498db;
+}
+
+</style>
+
+
+<script>
+
+    const app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                tokens: [],
+                editService: '',
+                editSelfToken: '',
+                apiUrl: 'http://localhost:3000/api/tokens/'
+            }
+        },
+        methods: {
+            async getTokens() {
+                try {
+                    const response = await axios.get(`${this.apiUrl}`, {})
+                    this.tokens = response.data.data
+                } catch (e) {
+                    console.log(e.message)
+                }
+            },
+            async updateToken() {
+                try {
+                    const response = await axios.post(`${this.apiUrl}update`, {
+                        data: {
+                            editService: this.editService,
+                            editToken: this.editSelfToken
+                        }
+                    })
+                } catch (e) {
+                    console.log(e.message)
+                }
+            }
+        },
+        async beforeMount() {
+            await this.getTokens()
+        }
+    })
+
+</script>

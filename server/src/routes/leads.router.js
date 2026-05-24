@@ -16,7 +16,7 @@ leadsRouter.get('/getAll', async (req, res) => {
     }
 })
 
-leadsRouter.get('/getByData', async (req, res) => {
+leadsRouter.get('/getByDate', async (req, res) => {
     try {
 
         const { gte, lte } = req.query
@@ -27,6 +27,8 @@ leadsRouter.get('/getByData', async (req, res) => {
                 $lte: dayjs(lte).format('YYYY-MM-DD'),
             }
         })
+
+        console.log(leadsByDate, gte, lte)
 
         res.status(200).json({ data: leadsByDate })
     } catch (e) {

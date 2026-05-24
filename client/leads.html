@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Zvonobot токены</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs/dayjs.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h1>Лиды</h1>
+        <div>
+            <h3>Таблица с лидами</h3>
+            <input placeholder="gte" v-model="gte">
+            <input placeholder="lte" v-model="lte">
+            <button @click="getLeads">Искать</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Дата</th>
+                        <th>Телефон</th>
+                        <th>Брокер</th>
+                        <th>Расылка</th>
+                        <th>ID расылки</th>
+                        <th>Трансфер ?</th>
+                        <th>Воронка</th>
+                        <th>Цена за лид</th>
+                        <th>Оффер</th>
+                        <th>Статусы</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(lead, idx) in leadsTable">
+                        <td>{{ lead.datedAt }}</td>
+                        <td>{{ lead.phone }}</td>
+                        <td>{{ lead.broker }}</td>
+                        <td>{{ lead.mailingName }}</td>
+                        <td>{{ lead.mailingId }}</td>
+                        <td>{{ lead.isResidence }}</td>
+                        <td>{{ lead.finallyLeadCode }}</td>
+                        <td>{{ lead.finallyLeadPrice }}</td>
+                        <td>{{ lead.offerPrice }}</td>
+                        <td>{{ lead.statuses }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+
+<style>
+    
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f0f4f8;
+        margin: 0;
+        padding: 20px;
+        color: #333;
+    }
+
+    h1 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 30px;
+        font-size: 2.5em;
+    }
+
+    div {
+        max-width: 1200px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    h3 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        color: #34495e;
+    }
+
+    input[type="text"] {
+        padding: 10px 15px;
+        margin-right: 10px;
+        border: 2px solid #ccc;
+        border-radius: 12px;
+        font-family: 'Arial', sans-serif;
+        font-size: 14px;
+        background-color: #fafafa;
+        transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+    }
+
+    input[type="text"]:focus {
+        border-color: #2980b9;
+        box-shadow: 0 0 8px rgba(41, 128, 185, 0.3);
+        outline: none;
+        background-color: #fff;
+    }
+
+    button {
+        padding: 10px 20px;
+        background-color: #2980b9;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+        background-color: #3498db;
+        transform: scale(1.05);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    thead {
+        background-color: #2c3e50;
+        color: #fff;
+    }
+    
+    th, td {
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        text-align: left;
+        font-family: 'Arial', sans-serif;
+        font-size: 14px;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+</style>
+
+<script>
+
+    const app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                gte: dayjs(new Date).format('YYYY-MM-DD'),
+                lte: dayjs(new Date).format('YYYY-MM-DD'),
+                leadsTable: [],
+                apiUrl: 'http://localhost:3000/api/leads/'
+            }
+        },
+        methods: {
+            async getLeads() {
+                try {
+                    const response = await axios.get(`${this.apiUrl}getByDate`, {
+                        params: {
+                            gte: this.gte,
+                            lte: this.lte
+                        }
+                    })
+                    this.leadsTable = response.data.data
+                } catch (e) {
+                    console.log(e.message)
+                }
+            },
+        }
+    })
+
+</script>
