@@ -29,7 +29,8 @@ async function getEnvyBoxCalls(gte, lte) {
             }
         } else {
             // gte !== lte (диапазон 2+ дней)
-            dateType = 'week'
+            // dateType = 'week'
+            dateType = 'month'
         }
 
         console.log(dateType, '$&&$^%&*&^((&^(&')
