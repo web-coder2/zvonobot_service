@@ -195,10 +195,8 @@ button:hover {
             async updateToken() {
                 try {
                     const response = await axios.post(`${this.apiUrl}update`, {
-                        data: {
-                            editService: this.editService,
-                            editToken: this.editSelfToken
-                        }
+                        editService: this.editService,
+                        editToken: this.editSelfToken
                     })
                 } catch (e) {
                     console.log(e.message)

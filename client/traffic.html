@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8" />
-    <title>Zvonobot токены</title>
+    <title>Zvonobot трафик</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs/dayjs.min.js"></script>
@@ -62,27 +62,32 @@
                 </div>
             </div>
 
-            <div>
+            <div style="margin-top: 20px;">
                 <div class="broker-card" v-for="(broker, index) in trafficBrokers">
                     <h4>{{ broker.broker }}</h4>
                     <div class="broker-details">
                         <div>
                             <h5>Входы</h5>
-                            <p>{{ broker.inputs.count }}</p>
-                            <p>{{ broker.inputs.percent }}</p>
-                            <p>{{ broker.inputs.spent }}</p>
+                            <p>Кол-во = {{ broker.inputs.count }}</p>
+                            <p>{{ broker.inputs.percent }} %</p>
+                            <p>Общая сума = {{ broker.inputs.totalSpent }}</p>
                         </div>
                         <div>
                             <h5>Лиды</h5>
-                            <p>{{ broker.leads.count }}</p>
-                            <p>{{ broker.leads.percent }}</p>
-                            <p>{{ broker.leads.spent }}</p>
+                            <p>Кол-во = {{ broker.leads.count }}</p>
+                            <p>{{ broker.leads.percent }} %</p>
+                            <p>Общая сума = {{ broker.leads.totalSpent }}</p>
                         </div>
                         <div>
                             <h5>Холды</h5>
-                            <p>{{ broker.holds.count }}</p>
-                            <p>{{ broker.holds.percent }}</p>
-                            <p>{{ broker.holds.spent }}</p>
+                            <p>Кол-во = {{ broker.holds.count }}</p>
+                            <p>{{ broker.holds.percent }} &</p>
+                            <p>Общая сума = {{ broker.holds.totalSpent }}</p>
+                        </div>
+                        <div class="total-item">
+                            <h5>Результат</h5>
+                            <p>Общий: {{ broker.result.total }}</p>
+                            <p>Звонобот: {{ broker.result.traffic }}</p>
                         </div>
                     </div>
                 </div>

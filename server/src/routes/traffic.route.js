@@ -11,16 +11,21 @@ import tokensModel from "../models/tokens.model.js"
 const trafficRoute = Router()
 
 
-function getResultByTraffic(user, totalSpent, gte, lte) {
+function getResultByTraffic(user, totalSpent, gte, lte, countUsers = null) {
 
     const daysCount = dayjs(lte).startOf('day').diff(dayjs(gte).startOf('day'), 'day') + 1
 
     let clear = user.offerPrice * 0.6
     let brokersSalary = user.offerPrice * 0.6 * 0.15
     let office = 50000 * daysCount
+
+    if (countUsers) {
+        office = office / countUsers
+    }
+
     let nalog = user.offerPrice * 0.6 * 0.07
 
-    const resultTraffic = clear - brokersSalary - office - nalog - totalSpent 
+    const resultTraffic = Math.round(clear - brokersSalary - office - nalog - totalSpent)
     return resultTraffic
 }
 
@@ -33,11 +38,11 @@ function getTotalResultByTraffic(totalSumHold, totalSpent, gte, lte) {
     let office = 50000 * daysCount
     let nalog = totalSumHold * 0.6 * 0.07
 
-    const resultTraffic = clear - brokersSalary - office - nalog - totalSpent 
+    const resultTraffic = Math.round(clear - brokersSalary - office - nalog - totalSpent)
     return resultTraffic
 }
 
-async function getResultTotal(totalSpent, gte, lte, broker = null) {
+async function getResultTotal(totalSpent, gte, lte, broker = null, countUsers = null) {
 
     const daysCount = dayjs(lte).startOf('day').diff(dayjs(gte).startOf('day'), 'day') + 1
     const residenceToken = await tokensModel.getToken('residence')
@@ -52,7 +57,7 @@ async function getResultTotal(totalSpent, gte, lte, broker = null) {
     })
 
     residenceLeads.forEach((lead) => {
-        if (['hold', 'confirmed', 'refused'].includes(lead.status) && broker !== null && broker === lead.userId.name) {
+        if (['hold', 'confirmed', 'refused'].includes(lead.status) && broker !== null && broker === lead?.userId?.name) {
             holdsSum += lead?.price?.offer ?? 0
         }
     })
@@ -60,9 +65,15 @@ async function getResultTotal(totalSpent, gte, lte, broker = null) {
     let clear = holdsSum * 0.6
     let brokersSalary = holdsSum * 0.6 * 0.15
     let office = 50000 * daysCount
+
+    if (broker && countUsers) {
+        office = office / countUsers
+    }
+
     let nalog = holdsSum * 0.6 * 0.07
 
-    const resultTotal = clear - brokersSalary - office - nalog - totalSpent
+    const resultTotal = Math.round(clear - brokersSalary - office - nalog - totalSpent)
+
     return resultTotal
 }
 
@@ -88,11 +99,9 @@ trafficRoute.get('/getByDate', async (req, res) => {
         let totalSpent = 0
         let totalHold = 0
 
-        console.log(mailingsByDate, '1@!#!@#!@#')
-
         mailingsByDate.forEach((mailing) => {
-            totalCalls += mailing.totalCalls
-            totalSpent += mailing.totalSpent
+            totalCalls += mailing.totalCalls || 0
+            totalSpent += mailing.totalSpent || 0
         })
 
         leadsByDate.forEach((lead) => {
@@ -104,7 +113,7 @@ trafficRoute.get('/getByDate', async (req, res) => {
             calls: {
                 count: totalCalls,
                 percent: 'Звонки',
-                spent: totalSpent
+                spent: Math.round(totalSpent)
             },
             inputs: {
                 count: 0,
@@ -122,7 +131,7 @@ trafficRoute.get('/getByDate', async (req, res) => {
                 spent: 0
             },
             result: {
-                total: getResultTotal(totalSpent, gte, lte),
+                total: await getResultTotal(totalSpent, gte, lte),
                 traffic: getTotalResultByTraffic(totalHold, totalSpent, gte, lte)
             }
         }
@@ -130,7 +139,6 @@ trafficRoute.get('/getByDate', async (req, res) => {
         let brokers = []
 
         let aggregatedData = {}
-
 
         leadsByDate.forEach((lead) => {
 
@@ -160,15 +168,14 @@ trafficRoute.get('/getByDate', async (req, res) => {
             total.holds.count += user.countHold || 0
         })
 
-        let spentToInput = total.calls.totalSpent / total.inputs.count
-        let spentToLead = total.calls.totalSpent / total.leads.count
-        let spentToHold = total.calls.totalSpent / total.holds.count
+        let spentToInput = Math.round(total.calls.spent / total.inputs.count) || 0
+        let spentToLead = Math.round(total.calls.spent / total.leads.count) || 0
+        let spentToHold = Math.round(total.calls.spent / total.holds.count) || 0
 
-        console.log(spentToInput, spentToLead, spentToHold)
 
-        total.inputs.percent = Math.round((total.inputs.count / total.calls.count) * 100)
-        total.leads.percent = Math.round((total.leads.count / total.inputs.count) * 100)
-        total.holds.percent = Math.round((total.holds.count / total.inputs.count) * 100)
+        total.inputs.percent = Math.round((total.inputs.count / total.calls.count) * 100) || 0
+        total.leads.percent = Math.round((total.leads.count / total.inputs.count) * 100) || 0
+        total.holds.percent = Math.round((total.holds.count / total.inputs.count) * 100) || 0
 
         total.inputs.spent = spentToInput
         total.leads.spent = spentToLead
@@ -181,20 +188,27 @@ trafficRoute.get('/getByDate', async (req, res) => {
                 inputs: {
                     count: user.countInputs,
                     percent: Math.round((user.countInputs / total.inputs.count) * 100),
-                    totalSpent: user.countInputs * spentToInput
+                    totalSpent: Math.round(user.countInputs * spentToInput)
                 },
                 leads: {
                     count: user.countLeads,
                     percent: Math.round((user.countLeads / total.inputs.count) * 100),
-                    totalSpent: user.countLeads * spentToInput
+                    totalSpent: Math.round(user.countLeads * spentToInput)
                 },
                 holds: {
-                    count: user.countHolds,
-                    percent: Math.round((user.countHolds / total.inputs.count) * 100),
-                    totalSpent: user.countHolds * spentToInput
+                    count: user.countHold,
+                    percent: Math.round((user.countHold / total.inputs.count) * 100),
+                    totalSpent: Math.round(user.countHold * spentToInput)
                 }
             })
         })
+
+        for (let broker of brokers) {
+            broker.result = {
+                total: await getResultTotal(broker.inputs.totalSpent, gte, lte, broker.broker, brokers.length - 1),
+                traffic: getResultByTraffic(broker, broker.inputs.totalSpent, gte, lte, brokers.length - 1)
+            }
+        }
 
         let trafficData = {
             total: total,

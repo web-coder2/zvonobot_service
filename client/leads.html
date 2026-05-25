@@ -20,7 +20,7 @@
 
     <div id="app">
         <h1>Лиды</h1>
-        <div>
+        <div class="main">
             <h3>Таблица с лидами</h3>
             <input placeholder="gte" v-model="gte">
             <input placeholder="lte" v-model="lte">
@@ -67,9 +67,12 @@
         align-items: center;
         justify-content: space-between;
         background-color: #2c3e50;
-        padding: 8px 20px;
+        padding: 10px 30px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        height: 50px;
+        height: 60px;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
     }
 
     .navbar h1 {
@@ -106,20 +109,16 @@
         color: #333;
     }
 
+    .main {
+        margin-top: 20px;
+        margin-left: 20px;
+    }
+
     h1 {
         text-align: center;
         color: #2c3e50;
         margin-bottom: 30px;
         font-size: 2.5em;
-    }
-
-    div {
-        max-width: 1200px;
-        margin: 0 auto;
-        background-color: #ffffff;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
 
     h3 {

@@ -54,6 +54,7 @@ async function getLeads(token, gte, lte) {
                     'lte:' + dayjs(lte).format('YYYY-MM-DD')
                 ],
                 _select: 'status phone startedAt price',
+                _populate: 'userId',
                 _limit: 0
             }
         })
