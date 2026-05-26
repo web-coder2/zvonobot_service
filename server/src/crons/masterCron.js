@@ -1,5 +1,6 @@
 import axios from "axios"
 import dayjs from "dayjs"
+import cron from "node-cron"
 
 import tokenModel from '../models/tokens.model.js'
 import mailingsModel from "../models/mailings.model.js"
@@ -119,5 +120,16 @@ async function masterUpdateData(gte, lte) {
     }
 }
 
+function updateDataCron(schedule) {
+    cron.schedule(schedule, () => {
+        try {
+            masterUpdateData(new Date, new Date)
+            console.log(`функция обновления успешно вполнена ${schedule}`)
+        } catch (e) {
+            console.error(`Ошибка при обновление даных ${e.message}`)
+        }
+    })
+}
 
-export { masterUpdateData }
+
+export { masterUpdateData, updateDataCron }
