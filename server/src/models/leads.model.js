@@ -18,7 +18,11 @@ const LeadsSchema = new Schema({
     isResidence: Boolean,
     broker: String,
     offerPrice: Number,
-    statuses: [String]
+    statuses: [String],
+    employeeId: String,
+    uisInfo: {
+        type: Schema.Types.Mixed
+    }
 })
 
 LeadsSchema.statics.updateLead = async function (data) {
@@ -32,9 +36,11 @@ LeadsSchema.statics.updateLead = async function (data) {
                     finallyLeadCode: data.finallyLeadCode,
                     finallyLeadPrice: data.finallyLeadPrice,
                     isResidence: data.isResidence,
+                    employeeId: data.employeeId,
                     broker: data.broker,
                     offerPrice: data.offerPrice,
                     statuses: data.statuses,
+                    uisInfo: data.uisInfo
                 }
             },
             { upsert: true }

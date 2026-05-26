@@ -28,8 +28,6 @@ leadsRouter.get('/getByDate', async (req, res) => {
             }
         })
 
-        console.log(leadsByDate, gte, lte)
-
         res.status(200).json({ data: leadsByDate })
     } catch (e) {
         console.log(e.message)

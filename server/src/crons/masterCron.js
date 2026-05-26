@@ -24,7 +24,7 @@ async function masterUpdateData(gte, lte) {
         const zvonobotMailingsLeads = []
 
         const zvonobotMailings = await getZvonobotMailings(zvonobotToken, gte, lte)
-        // console.log('Список активных ддля обработки расылок ....', zvonobotMailings)
+        console.log('Список активных ддля обработки расылок ....', zvonobotMailings)
 
         // маисив 4 расылок дял теста сервиса чтобы долго не ждать
         let shortMailingsArray = zvonobotMailings.slice(1, 10)
@@ -55,17 +55,22 @@ async function masterUpdateData(gte, lte) {
                     return item.phone === lead.phone
                 })
     
-                let envyCallKey = envyboxCalls.find((call) => {
-                    return call.phone === lead.phone
-                })
-    
-                if (leadCallKey) {
-                    lead.broker = leadCallKey.broker
+                if (Array.isArray(envyboxCalls)) {
+                    let envyCallKey = envyboxCalls.find((call) => {
+                        return call.phone === lead.phone
+                    })
+
+                    if (envyCallKey) {
+                        lead.leadCode2 = envyCallKey.stageCode
+                        lead.leadPrice2 = envyCallKey.callPrice
+                    }
                 }
     
-                if (envyCallKey) {
-                    lead.leadCode2 = envyCallKey.stageCode
-                    lead.leadPrice2 = envyCallKey.callPrice
+
+                if (leadCallKey) {
+                    lead.broker = leadCallKey.broker
+                    lead.employeeId = leadCallKey.employeeId
+                    lead.uisInfo = leadCallKey.uisInfo
                 }
     
                 if (residenceKey && residenceKey.length > 0) {
@@ -94,12 +99,10 @@ async function masterUpdateData(gte, lte) {
 
             for (let lead of fullMailingInfo.leadsInMailing) {
                 const result = await leadsModel.updateLead(lead)
-                console.log(result)
+                console.log(lead, '!@#!@#!@#!@#!@#!')
             }
 
         }
-
-        console.log('Список всех лидов собраных из всех расылок .....', zvonobotMailingsLeads)
 
     } catch (e) {
         console.log(`ошибка в мастер кроне ${e.message}`)
@@ -107,14 +110,4 @@ async function masterUpdateData(gte, lte) {
 }
 
 
-async function startManyCrons() {
-    let start = '2026-05-18'
-    let end = '2026-05-24'
-
-    for (let now = dayjs(start).format('YYYY-MM-DD'); now <= dayjs(end).format('YYYY-MM-DD'); now = dayjs(now).add(1, 'day').format('YYYY-MM-DD')) {
-        masterUpdateData(now)
-    }
-
-}
-
-export { masterUpdateData, startManyCrons }
+export { masterUpdateData }

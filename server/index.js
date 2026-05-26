@@ -9,7 +9,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 
-import { masterUpdateData, startManyCrons } from './src/crons/masterCron.js'
+import { masterUpdateData } from './src/crons/masterCron.js'
 
 import leadsRouter from './src/routes/leads.router.js'
 import mailingRouter from './src/routes/mailings.router.js'
@@ -17,8 +17,7 @@ import minusesRoute from './src/routes/minuses.route.js'
 import trafficRoute from './src/routes/traffic.route.js'
 import tokensRouter from './src/routes/tokens.router.js'
 
-// masterUpdateData(new Date(), new Date())
-startManyCrons()
+masterUpdateData(new Date('2026-05-25'), new Date('2026-05-25'))
 
 dotenv.config()
 

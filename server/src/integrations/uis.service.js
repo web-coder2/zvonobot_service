@@ -26,12 +26,17 @@ async function getUIScalls(token, gte, lte, users) {
                 return item.employeeId.toString() === call.employeeId
             })
 
-            let broker = userKey ? userKey.user : null
+            let broker = null
+
+            if (userKey) {
+                broker = userKey.user
+            }
 
             uisCalls.push({
                 contactPhone: call.contactPhone,
                 employeeId : call.employeeId,
                 broker: broker,
+                uisInfo: call
             })
         })
 

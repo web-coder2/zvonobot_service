@@ -26,11 +26,9 @@ async function getEnvyBoxCalls(gte, lte) {
             // gte === сегодня - день (вчера)
             } else if (dayjs(gte).format('YYYY-MM-DD') === dayjs(new Date).subtract(1, 'day').format('YYYY-MM-DD')) {
                 dateType = 'yesterday'
+            } else {
+                dateType = 'month'
             }
-        } else {
-            // gte !== lte (диапазон 2+ дней)
-            // dateType = 'week'
-            dateType = 'month'
         }
 
         console.log(dateType, '$&&$^%&*&^((&^(&')

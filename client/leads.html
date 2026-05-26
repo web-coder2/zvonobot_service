@@ -22,8 +22,8 @@
         <h1>Лиды</h1>
         <div class="main">
             <h3>Таблица с лидами</h3>
-            <input placeholder="gte" v-model="gte">
-            <input placeholder="lte" v-model="lte">
+            <input placeholder="gte" v-model="gte" type="date">
+            <input placeholder="lte" v-model="lte" type="date">
             <button @click="getLeads">Искать</button>
             <table>
                 <thead>
@@ -31,6 +31,7 @@
                         <th>Дата</th>
                         <th>Телефон</th>
                         <th>Брокер</th>
+                        <th>EmployeID</th>
                         <th>Расылка</th>
                         <th>ID расылки</th>
                         <th>Трансфер ?</th>
@@ -45,6 +46,7 @@
                         <td>{{ lead.datedAt }}</td>
                         <td>{{ lead.phone }}</td>
                         <td>{{ lead.broker }}</td>
+                        <td>{{ lead.employeeId }}</td>
                         <td>{{ lead.mailingName }}</td>
                         <td>{{ lead.mailingId }}</td>
                         <td>{{ lead.isResidence }}</td>
