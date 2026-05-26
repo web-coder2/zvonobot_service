@@ -64,4 +64,36 @@ async function getLeads(token, gte, lte) {
     }
 }
 
-export { getBrokers, getLeads, getBrokerByEmployId }
+async function getCallsByDate(token, gte, lte) {
+    try {
+        const minimyseArray = []
+
+        const response = await axios.get('https://residence.hbnetwork.ru/api/calls', {
+            headers: { Authorization: `Bearer ${token}` },
+            params: {
+                startedAt: [
+                    'gte:' + dayjs(gte).format('YYYY-MM-DD'),
+                    'lte:' + dayjs(lte).format('YYYY-MM-DD')
+                ],
+                state: ['transfer', 'break', 'call'],
+                _populate: ['userId'],
+                _limit: 0
+            }
+        })
+
+
+        response.data.data.forEach((call) => {
+            minimyseArray.push({
+                contactPhone: call.contactPhone,
+                user: call?.userId?.name ?? null,
+                state: call.state
+            })
+        })
+
+        return minimyseArray
+    } catch (e) {
+        console.log(`ошибка получения звонков из residence ${e.message}`)
+    }
+}
+
+export { getBrokers, getLeads, getBrokerByEmployId, getCallsByDate }

@@ -7,7 +7,7 @@ import finishedMailingsModel from "../models/finishedMailings.model.js"
 import leadsModel from "../models/leads.model.js"
 
 import { getZvonobotMailings, prepaingMailing } from '../integrations/zvonobot.service.js'
-import { getBrokers, getLeads } from "../integrations/residence.service.js"
+import { getBrokers, getLeads, getCallsByDate } from "../integrations/residence.service.js"
 import { getUIScalls } from "../integrations/uis.service.js"
 import { getEnvyBoxCalls } from "../integrations/envybox.service.js"
 
@@ -33,6 +33,7 @@ async function masterUpdateData(gte, lte) {
         const uisCalls = await getUIScalls(uisToken, gte, lte, brokers)
         const residenceLeads = await getLeads(residenceToken, gte, lte)
         const envyboxCalls = await getEnvyBoxCalls(gte, lte)
+        const residenceCalls = await getCallsByDate(residenceToken, gte, lte)
 
         for (let mailing of zvonobotMailings) {
         // for (let mailing of shortMailingsArray) {
@@ -47,7 +48,11 @@ async function masterUpdateData(gte, lte) {
             }
 
             fullMailingInfo.leadsInMailing.forEach((lead) => {
-                let leadCallKey = uisCalls.find((call) => {
+                // let leadCallKey = uisCalls.find((call) => {
+                //     return call.contactPhone === lead.phone
+                // })
+
+                let residenceCallKey = residenceCalls.find((call) => {
                     return call.contactPhone === lead.phone
                 })
     
@@ -67,10 +72,15 @@ async function masterUpdateData(gte, lte) {
                 }
     
 
-                if (leadCallKey) {
-                    lead.broker = leadCallKey.broker
-                    lead.employeeId = leadCallKey.employeeId
-                    lead.uisInfo = leadCallKey.uisInfo
+                // if (leadCallKey) {
+                //     lead.broker = leadCallKey.broker
+                //     lead.employeeId = leadCallKey.employeeId
+                //     lead.uisInfo = leadCallKey.uisInfo
+                // }
+
+                if (residenceCallKey) {
+                    lead.broker = residenceCallKey.user
+                    lead.state = residenceCallKey.state
                 }
     
                 if (residenceKey && residenceKey.length > 0) {

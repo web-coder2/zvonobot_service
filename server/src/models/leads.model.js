@@ -19,10 +19,11 @@ const LeadsSchema = new Schema({
     broker: String,
     offerPrice: Number,
     statuses: [String],
-    employeeId: String,
-    uisInfo: {
-        type: Schema.Types.Mixed
-    }
+    state: String,
+    // employeeId: String,
+    // uisInfo: {
+    //     type: Schema.Types.Mixed
+    // }
 })
 
 LeadsSchema.statics.updateLead = async function (data) {
@@ -36,11 +37,11 @@ LeadsSchema.statics.updateLead = async function (data) {
                     finallyLeadCode: data.finallyLeadCode,
                     finallyLeadPrice: data.finallyLeadPrice,
                     isResidence: data.isResidence,
-                    employeeId: data.employeeId,
+                    // employeeId: data.employeeId,
                     broker: data.broker,
                     offerPrice: data.offerPrice,
                     statuses: data.statuses,
-                    uisInfo: data.uisInfo
+                    // uisInfo: data.uisInfo
                 }
             },
             { upsert: true }
