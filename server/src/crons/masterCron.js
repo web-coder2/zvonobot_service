@@ -31,7 +31,7 @@ async function masterUpdateData(gte, lte) {
         let shortMailingsArray = zvonobotMailings.slice(1, 10)
 
         const brokers = await getBrokers(residenceToken)
-        const uisCalls = await getUIScalls(uisToken, gte, lte, brokers)
+        // const uisCalls = await getUIScalls(uisToken, gte, lte, brokers)
         const residenceLeads = await getLeads(residenceToken, gte, lte)
         const envyboxCalls = await getEnvyBoxCalls(gte, lte)
         const residenceCalls = await getCallsByDate(residenceToken, gte, lte)
@@ -91,6 +91,13 @@ async function masterUpdateData(gte, lte) {
                         lead.statuses.push(item.status)
                         lead.offerPrice += ['hold', 'confirmed', 'refused'].includes(item.status) ? item?.price?.offer : 0
                     })
+
+                    // если с зарплатананя => звонки не сомг найти и сопоставить бркоера (но был перевод в residence) тогда из лидов возьмем
+                    if (lead.isResidence === true && lead.broker === null) {
+                        console.log(`нашелся лид без определеного но с переводом ${lead.phone} сопоставим ему ${item?.userId?.name}`)
+                        lead.broker = item?.userId?.name || null
+                    }
+
                 }
     
                 if (lead.leadCode === 'auto') {
@@ -110,7 +117,6 @@ async function masterUpdateData(gte, lte) {
 
             for (let lead of fullMailingInfo.leadsInMailing) {
                 const result = await leadsModel.updateLead(lead)
-                console.log(lead, '!@#!@#!@#!@#!@#!')
             }
 
         }

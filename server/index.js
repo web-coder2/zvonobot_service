@@ -17,6 +17,7 @@ import minusesRoute from './src/routes/minuses.route.js'
 import trafficRoute from './src/routes/traffic.route.js'
 import tokensRouter from './src/routes/tokens.router.js'
 
+const PORT = 9000
 const cronHour = '0 * * * *'
 
 // masterUpdateData(new Date(), new Date())
@@ -75,7 +76,7 @@ async function startConnectToDB() {
     }
 }
 
-server.listen(3000, () => {
+server.listen(PORT, () => {
     startConnectToDB()
     console.log('server has been running')
 })

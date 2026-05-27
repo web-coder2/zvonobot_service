@@ -193,12 +193,12 @@ trafficRoute.get('/getByDate', async (req, res) => {
                 leads: {
                     count: user.countLeads,
                     percent: Math.round((user.countLeads / total.inputs.count) * 100),
-                    totalSpent: Math.round(user.countLeads * spentToInput)
+                    totalSpent: Math.round(user.countLeads * spentToLead)
                 },
                 holds: {
                     count: user.countHold,
                     percent: Math.round((user.countHold / total.inputs.count) * 100),
-                    totalSpent: Math.round(user.countHold * spentToInput)
+                    totalSpent: Math.round(user.countHold * spentToHold)
                 }
             })
         })
