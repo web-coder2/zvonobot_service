@@ -15,6 +15,7 @@
             <a href="/leads">Лиды</a>
             <a href="/minuses">Минусы</a>
             <a href="/traffic">Трафик</a>
+            <a href="/mailings">Расылки</a>
         </div>
     </div>
     
@@ -28,9 +29,13 @@
         </div>
         <div>
             <h3>Обновить токен</h3>
-            <input v-model="editService" placeholder="service">
+            <!-- <input v-model="editService" placeholder="service"> -->
+            <select v-model="editService" placeholder="service">
+                <option v-for="(item, idx) in services" :value="item">{{ item }}</option>
+            </select>
             <input v-model="editSelfToken" placeholder="token">
             <button @click="updateToken">обновить</button>
+            <button style="background-color: #34495e;" @click="checkToken">проверить токен</button>
         </div>
     </div>
 </body>
@@ -138,7 +143,7 @@ h3 {
     color: #2980b9;
 }
 
-#app input {
+#app input, select {
     padding: 10px 15px;
     margin-right: 10px;
     border: 1px solid #ccc;
@@ -180,7 +185,8 @@ button:hover {
                 tokens: [],
                 editService: '',
                 editSelfToken: '',
-                apiUrl: 'http://localhost:3000/api/tokens/'
+                apiUrl: '/api/tokens/',
+                services: []
             }
         },
         methods: {
@@ -188,6 +194,13 @@ button:hover {
                 try {
                     const response = await axios.get(`${this.apiUrl}`, {})
                     this.tokens = response.data.data
+
+                    response.data.data.forEach((service) => {
+                        this.services.push(service.service)
+                    })
+
+                    this.editService = this.services[0]
+
                 } catch (e) {
                     console.log(e.message)
                 }
@@ -198,8 +211,25 @@ button:hover {
                         editService: this.editService,
                         editToken: this.editSelfToken
                     })
+                    await this.getTokens()
                 } catch (e) {
                     console.log(e.message)
+                }
+            },
+            async checkToken() {
+                try {
+                    const token = this.tokens.find((token) => {
+                        return token.service === 'zvonobot'
+                    }).token
+
+                    const response = await axios.get('https://lk.zvonobot.ru/api/additionalServices/get', {
+                        headers: { "authorization": "Bearer " + token }
+                    })
+
+                    alert('zvonobot токен успешно работате')
+                } catch (e) {
+                    console.log(e.message)
+                    alert(`ошибка с zvonobot токеном ${e.message}`)
                 }
             }
         },

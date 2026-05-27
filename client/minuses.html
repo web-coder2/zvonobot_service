@@ -15,6 +15,7 @@
             <a href="/leads">Лиды</a>
             <a href="/minuses">Минусы</a>
             <a href="/traffic">Трафик</a>
+            <a href="/mailings">Расылки</a>
         </div>
     </div>
     
@@ -209,7 +210,7 @@ tbody tr:hover {
                 gte: dayjs(new Date).format('YYYY-MM-DD'),
                 lte: dayjs(new Date).format('YYYY-MM-DD'),
                 minusesTable: [],
-                apiUrl: 'http://localhost:3000/api/minuses/'
+                apiUrl: '/api/minuses/'
             }
         },
         methods: {

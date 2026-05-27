@@ -17,6 +17,33 @@ mailingRouter.get('/getAll', async (req, res) => {
     }
 })
 
+mailingRouter.get('/getAllFinished', async (req, res) => {
+    try {
+        const allFinishedMailings = await finishedMailingsModel.find()
+        res.status(200).json({ data: allFinishedMailings })
+    } catch (e) {
+        console.log(e.message)
+        res.status(500).json({ err: e.message })
+    }
+})
+
+mailingRouter.get('/getFinishedByDate', async (req, res) => {
+    try {
+        const { gte, lte } = req.query
+
+        const finishedMailingsByDate = await finishedMailingsModel.find({
+            mailingDate: {
+                $gte: dayjs(gte).format('YYYY-MM-DD'),
+                $lte: dayjs(lte).format('YYYY-MM-DD'),
+            }
+        })
+        res.status(200).json({ data: finishedMailingsByDate })
+    } catch (e) {
+        console.log(e.message)
+        res.status(500).json({ err: e.message })
+    }
+})
+
 mailingRouter.get('/getByDate', async (req, res) => {
     try {
 

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Zvonobot расылки</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs/dayjs.min.js"></script>
+</head>
+<body>
+    <div class="navbar">
+        <h1>Zvonobot</h1>
+        <div class="nav-links">
+            <a href="/tokens">Токены</a>
+            <a href="/leads">Лиды</a>
+            <a href="/minuses">Минусы</a>
+            <a href="/traffic">Трафик</a>
+            <a href="/mailings">Расылки</a>
+        </div>
+    </div>
+    
+    <div id="app">
+        <h3>Рассылки</h3>
+
+        <div style="margin-bottom:15px;">
+            <button @click="setMode('all_active', true)">Все активные</button>
+            <button @click="setMode('all_finished', true)">Все завершённые</button>
+            <button @click="setMode('active_byDate', false)">Активные по дате</button>
+            <button @click="setMode('finished_byDate', false)">Завершённые по дате</button>
+        </div>
+    
+        <div v-if="mode === 'active_byDate' || mode === 'finished_byDate'" style="margin-bottom:20px;">
+            <input type="date" v-model="gte" /> — <input type="date" v-model="lte" />
+            <button @click="fetchMailings()">Искать</button>
+        </div>
+    
+        <table v-if="mailings.length > 0">
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>ID</th>
+                    <th>Название</th>
+                    <th>{{ mode === 'all_active' || 'active_byDate' ? 'показатели' : 'статус' }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in mailings" :key="item.mailingId">
+                    <td>{{ item.mailingDate }}</td>
+                    <td>{{ item.mailingId }}</td>
+                    <td>{{ item.mailingName }}</td>
+                    <td>
+                        <div v-if="mode === 'all_active' || mode === 'active_byDate'" class="info-block">
+                          <div class="card">
+                            <div class="label">Общее звонков</div>
+                            <div class="value">{{ item.totalCalls }}</div>
+                          </div>
+                          <div class="card">
+                            <div class="label">Лидов</div>
+                            <div class="value">{{ item.totalLeads }}</div>
+                          </div>
+                          <div class="card">
+                            <div class="label">Расходы</div>
+                            <div class="value">{{ Math.round(item.totalSpent) }}</div>
+                          </div>
+                        </div>
+                        <div v-else-if="mode === 'all_finished' || mode === 'finished_byDate'" class="status-block">
+                          <div class="status-label">Статус:</div>
+                          <div class="status-value">{{ item.mailingStatus }}</div>
+                        </div>
+                      </td>
+                </tr>
+            </tbody>
+        </table>
+        <div v-else>
+            Нет данных
+        </div>
+    </div>
+</body>
+</html>
+
+<style>
+
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f6f8;
+    color: #333;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #2c3e50;
+    padding: 8px 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: 50px;
+}
+
+.navbar h1 {
+    color: #fff;
+    margin: 0;
+    font-size: 1.4em;
+}
+
+.nav-links {
+    display: flex;
+    gap: 15px;
+}
+
+.nav-links a {
+    color: #ecf0f1;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.nav-links a:hover {
+    background-color: rgba(236, 240, 241, 0.2);
+    box-shadow: 0 0 5px rgba(236, 240, 241, 0.3);
+}
+
+#app {
+    padding: 20px;
+}
+
+h3 {
+    margin-top: 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#app input, select {
+    padding: 10px 15px;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    width: 150px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+#app input:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
+table th, table td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+table th {
+    background-color: #ecf0f1;
+    font-weight: 600;
+}
+
+button {
+    padding: 8px 16px;
+    margin: 5px;
+    border: none;
+    background-color: #1d4e1c;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #109121;
+}
+
+.info-block {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.card {
+  background: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  min-width: 140px;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+
+.label {
+  font-size: 0.85em;
+  color: #555;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.value {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.status-block {
+  display: flex;
+  align-items: center;
+  background-color: #e0f7fa;
+  border: 1px solid #4dd0e1;
+  border-radius: 8px;
+  padding: 10px;
+  font-family: 'Arial', sans-serif;
+  font-size: 1em;
+}
+
+.status-label {
+  font-weight: 600;
+  margin-right: 8px;
+  color: #00796b;
+}
+
+.status-value {
+  font-weight: bold;
+  color: #004d40;
+}
+
+</style>
+
+<script>
+
+    const app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                mailings: [],
+                mode: '',
+                gte: dayjs(new Date).format('YYYY-MM-DD'),
+                lte: dayjs(new Date).format('YYYY-MM-DD'),
+                baseUrl: "/api/mailings/"
+            }
+        },
+        methods: {
+            setMode(selectedMode, onStarter) {
+                this.mode = selectedMode
+                this.mailings = []
+
+                if (onStarter === true) {
+                    this.fetchMailings()
+                }
+
+            },
+            async fetchMailings() {
+                let url = ''
+
+                if (this.mode === 'all_active') {
+                    url = `${this.baseUrl}getAll`
+                } else if (this.mode === 'all_finished') {
+                    url = `${this.baseUrl}getAllFinished`
+                } else if (this.mode === 'active_byDate') {
+                    url = `${this.baseUrl}getByDate?gte=${this.gte}&lte=${this.lte}`
+                } else if (this.mode === 'finished_byDate') {
+                    url = `${this.baseUrl}getFinishedByDate?gte=${this.gte}&lte=${this.lte}`
+                } else {
+                    return
+                }
+
+                try {
+                    const response = await axios.get(url)
+                    this.mailings = response.data.data
+                } catch (e) {
+                    console.error(e)
+                    alert('Ошибка при получении данных')
+                }
+            }
+        }
+    })
+
+</script>

@@ -121,6 +121,9 @@ async function masterUpdateData(gte, lte) {
 }
 
 function updateDataCron(schedule) {
+
+    masterUpdateData(new Date, new Date)
+
     cron.schedule(schedule, () => {
         try {
             masterUpdateData(new Date, new Date)
