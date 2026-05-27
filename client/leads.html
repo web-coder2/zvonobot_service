@@ -26,10 +26,12 @@
             <input placeholder="gte" v-model="gte" type="date">
             <input placeholder="lte" v-model="lte" type="date">
             <button @click="getLeads">Искать</button>
+            <button @click="getNullLeads" style="background-color: rgb(27, 106, 27); margin-left: 20px;">скачать неопределные</button>
             <table>
                 <thead>
                     <tr>
                         <th>Дата</th>
+                        <td>Время</td>
                         <th>Телефон</th>
                         <th>Брокер</th>
                         <!-- <th>EmployeID</th> -->
@@ -46,6 +48,7 @@
                 <tbody>
                     <tr v-for="(lead, idx) in leadsTable">
                         <td>{{ lead.datedAt }}</td>
+                        <td>{{ formater(lead.startedAt) }}</td>
                         <td>{{ lead.phone }}</td>
                         <td>{{ lead.broker }}</td>
                         <!-- <td>{{ lead.employeeId }}</td> -->
@@ -218,6 +221,34 @@
                     console.log(e.message)
                 }
             },
+            formater(date) {
+                return dayjs(date).format('HH:mm:ss')
+            },
+            async getNullLeads() {
+                try {
+                    const response = await axios.get(`${this.apiUrl}getNullBrokerLeads`, {
+                        params: {
+                            gte: this.gte,
+                            lte: this.lte
+                        }
+                    })
+                    
+                    const phones = response.data.data
+                    const fileContent = phones.join('\n')
+                    const blob = new Blob([fileContent], { type: 'text/plain' })
+                    const url = URL.createObjectURL(blob)
+                    const link = document.createElement('a')
+                    link.href = url
+                    link.download = 'null_leads.txt'
+                    document.body.appendChild(link)
+                    link.click()
+                    document.body.removeChild(link)
+                    URL.revokeObjectURL(url)
+
+                } catch (e) {
+                    console.log(e.message)
+                }
+            }
         }
     })
 

@@ -133,6 +133,7 @@ async function prepaingMailing(mailing, token) {
 
                         let leadObject = {
                             datedAt: dayjs(mailing.mailingDate).format('YYYY-MM-DD'),
+                            startedAt: new Date(),
                             mailingName: mailing.mailingName,
                             mailingId: mailing.mailingId,
                             phone: call.phone.phone,

@@ -4,6 +4,7 @@ import dayjs from "dayjs"
 
 const LeadsSchema = new Schema({
     datedAt: String,
+    startedAt: Date,
     mailingName: String,
     mailingId: Number,
     phone: String,
@@ -19,7 +20,6 @@ const LeadsSchema = new Schema({
     broker: String,
     offerPrice: Number,
     statuses: [String],
-    state: String,
     // employeeId: String,
     // uisInfo: {
     //     type: Schema.Types.Mixed
@@ -32,6 +32,7 @@ LeadsSchema.statics.updateLead = async function (data) {
             { datedAt: data.datedAt, phone: data.phone },
             {
                 $set: {
+                    startedAt: data.startedAt,
                     mailingName: data.mailingName,
                     mailingId: data.mailingId,
                     finallyLeadCode: data.finallyLeadCode,

@@ -37,7 +37,37 @@
                         <p>Процент: {{ trafficTotal.calls.percent }}</p>
                         <p>Потрачено: {{ trafficTotal.calls.spent }}</p>
                     </div>
+
+
                     <div class="total-item">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Stats</th>
+                                    <th>Входы</th>
+                                    <th>Переводы</th>
+                                    <th>Холды</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Общее кол-во</td>
+                                    <td>{{ trafficTotal.inputs.count }} (<span style="color: rgb(118, 118, 216);">{{ trafficTotal.inputs.percent }} %</span>)</td>
+                                    <td>{{ trafficTotal.leads.count }} (<span style="color: rgb(118, 118, 216);">{{ trafficTotal.leads.percent }} %</span>)</td>
+                                    <td>{{ trafficTotal.holds.count }} (<span style="color: rgb(118, 118, 216);">{{ trafficTotal.holds.percent }} %</span>)</td>
+                                </tr>
+                                <tr>
+                                    <td>Потрачено на 1</td>
+                                    <td>{{ trafficTotal.inputs.spent }} $</td>
+                                    <td>{{ trafficTotal.leads.spent }} $</td>
+                                    <td>{{ trafficTotal.holds.spent }} $</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <!-- <div class="total-item">
                         <h5>Входы</h5>
                         <p>Общее: {{ trafficTotal.inputs.count }}</p>
                         <p>Процент: {{ trafficTotal.inputs.percent }}</p>
@@ -54,12 +84,15 @@
                         <p>Общее: {{ trafficTotal.holds.count }}</p>
                         <p>Процент: {{ trafficTotal.holds.percent }}</p>
                         <p>Потрачено: {{ trafficTotal.holds.spent }}</p>
-                    </div>
+                    </div> -->
                     <div class="total-item" style="flex: 1 1 100%;">
                         <h5>Результат</h5>
                         <p>Общий: {{ trafficTotal.result.total }}</p>
                         <p>Звонобот: {{ trafficTotal.result.traffic }}</p>
                     </div>
+
+
+
                 </div>
             </div>
 
@@ -67,7 +100,7 @@
                 <div class="broker-card" v-for="(broker, index) in trafficBrokers">
                     <h4>{{ broker.broker }}</h4>
                     <div class="broker-details">
-                        <div>
+                        <!-- <div>
                             <h5>Входы</h5>
                             <p>Кол-во = {{ broker.inputs.count }}</p>
                             <p>{{ broker.inputs.percent }} %</p>
@@ -84,7 +117,35 @@
                             <p>Кол-во = {{ broker.holds.count }}</p>
                             <p>{{ broker.holds.percent }} &</p>
                             <p>Общая сума = {{ broker.holds.totalSpent }}</p>
+                        </div> -->
+
+                        <div class="total-item">
+                            <table>
+                                <thead style="background-color: rgb(46, 112, 39);">
+                                    <tr>
+                                        <th>Stats</th>
+                                        <th>Входы</th>
+                                        <th>Переводы</th>
+                                        <th>Холды</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Общее кол-во</td>
+                                        <td>{{ broker.inputs.count }} (<span style="color: rgb(118, 118, 216);">{{ broker.inputs.percent }} %</span>)</td>
+                                        <td>{{ broker.leads.count }} (<span style="color: rgb(118, 118, 216);">{{ broker.leads.percent }} %</span>)</td>
+                                        <td>{{ broker.holds.count }} (<span style="color: rgb(118, 118, 216);">{{ broker.holds.percent }} %</span>)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Потрачено на 1</td>
+                                        <td>{{ broker.inputs.totalSpent }} $</td>
+                                        <td>{{ broker.leads.totalSpent }} $</td>
+                                        <td>{{ broker.holds.totalSpent }} $</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
+
                         <div class="total-item">
                             <h5>Результат</h5>
                             <p>Общий: {{ broker.result.total }}</p>
@@ -291,6 +352,57 @@ body {
 .broker-details p {
     margin: 4px 0;
     font-size: 0.95em;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Arial', sans-serif;
+    background-color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Заголовки таблицы */
+thead {
+    background-color: #2980b9; /* Синий фон */
+    color: #fff; /* Белый текст */
+}
+
+thead th {
+    padding: 12px 15px;
+    font-weight: 600;
+    text-align: center;
+    font-size: 1em;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Строки таблицы */
+tbody tr:nth-child(even) {
+    background-color: #f4f6f8; /* Светлый фон для четных строк */
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #ffffff; /* Белый фон для нечетных строк */
+}
+
+tbody td {
+    padding: 12px 15px;
+    text-align: center;
+    font-size: 0.95em;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Для ячеек с процентами, чтобы выделить их цветом */
+td span {
+    font-weight: bold;
+}
+
+/* Добавим немного плавности при наведении */
+table tbody tr:hover {
+    background-color: #e0f7fa; /* Мягкий голубой цвет при наведении */
+    cursor: pointer;
 }
 
 </style>

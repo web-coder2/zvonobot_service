@@ -35,7 +35,8 @@
             </select>
             <input v-model="editSelfToken" placeholder="token">
             <button @click="updateToken">обновить</button>
-            <button style="background-color: #34495e;" @click="checkToken">проверить токен</button>
+            <button style="background-color: #34495e;" @click="checkToken">проверить токен звонобот</button>
+            <button style="background-color: #162a3e;" @click="checkTokenResidence">проверить токен резиденции</button>
         </div>
     </div>
 </body>
@@ -230,6 +231,26 @@ button:hover {
                 } catch (e) {
                     console.log(e.message)
                     alert(`ошибка с zvonobot токеном ${e.message}`)
+                }
+            },
+            async checkTokenResidence() {
+                try {
+                    const token = this.tokens.find((token) => {
+                        return token.service === 'residence'
+                    }).token
+
+                    const response = await axios.get('https://residence.hbnetwork.ru/api/users/', {
+                        headers: { Authorization: `Bearer ${token}` },
+                        params: { 
+                            _page: 1, 
+                            _limit: 100,
+                        }
+                    })
+
+                    alert('residence токен успешно работате')
+                } catch (e) {
+                    console.log(e.message)
+                    alert(`ошибка с residence токеном ${e.message}`)
                 }
             }
         },
