@@ -1,6 +1,19 @@
 import axios from "axios"
 import dayjs from "dayjs"
 
+async function getResidenceToken() {
+    try {
+        const response = await axios.post('https://residence.hbnetwork.ru/api/login', {
+            login: "3000@mail.ru",
+            password: "3000"
+        })
+        const token = response.data.data.token
+        return token
+    } catch (e) {
+        console.log(`ошибка получение ауф токена residence ${e.message}`)
+    }
+}
+
 async function getBrokers(token) {
     try {
         let brokers = []
@@ -96,4 +109,4 @@ async function getCallsByDate(token, gte, lte) {
     }
 }
 
-export { getBrokers, getLeads, getBrokerByEmployId, getCallsByDate }
+export { getBrokers, getLeads, getBrokerByEmployId, getCallsByDate, getResidenceToken }

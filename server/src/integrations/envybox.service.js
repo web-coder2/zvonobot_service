@@ -96,7 +96,7 @@ async function getEnvyBoxCalls(gte, lte) {
         let minimysedData = []
 
         response.data.result.forEach((call) => {
-            let phone = call.phone
+            let phone = call.phone.replace(/\D/g, '')
             let stage = call.stage
             let stageCode
             let callPrice

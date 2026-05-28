@@ -3,6 +3,7 @@ import axios from 'axios'
 import dayjs from 'dayjs'
 
 import leadsModel from '../models/leads.model.js'
+import { getBrokers, getResidenceToken } from '../integrations/residence.service.js'
 
 const leadsRouter = Router()
 

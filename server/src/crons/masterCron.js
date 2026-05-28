@@ -8,7 +8,7 @@ import finishedMailingsModel from "../models/finishedMailings.model.js"
 import leadsModel from "../models/leads.model.js"
 
 import { getZvonobotMailings, prepaingMailing } from '../integrations/zvonobot.service.js'
-import { getBrokers, getLeads, getCallsByDate } from "../integrations/residence.service.js"
+import { getBrokers, getLeads, getCallsByDate, getResidenceToken } from "../integrations/residence.service.js"
 import { getUIScalls } from "../integrations/uis.service.js"
 import { getEnvyBoxCalls } from "../integrations/envybox.service.js"
 
@@ -19,8 +19,10 @@ async function masterUpdateData(gte, lte) {
 
 
         const zvonobotToken = await tokenModel.getToken('zvonobot')
-        const residenceToken = await tokenModel.getToken('residence')
-        const uisToken = await tokenModel.getToken('uis')
+        const residenceToken = await getResidenceToken()
+        
+        // const residenceToken = await tokenModel.getToken('residence')
+        // const uisToken = await tokenModel.getToken('uis')
 
         const zvonobotMailingsLeads = []
 
@@ -28,10 +30,11 @@ async function masterUpdateData(gte, lte) {
         console.log('Список активных ддля обработки расылок ....', zvonobotMailings)
 
         // маисив 4 расылок дял теста сервиса чтобы долго не ждать
-        let shortMailingsArray = zvonobotMailings.slice(1, 10)
+        // let shortMailingsArray = zvonobotMailings.slice(1, 10)
 
-        const brokers = await getBrokers(residenceToken)
+        // const brokers = await getBrokers(residenceToken)
         // const uisCalls = await getUIScalls(uisToken, gte, lte, brokers)
+
         const residenceLeads = await getLeads(residenceToken, gte, lte)
         const envyboxCalls = await getEnvyBoxCalls(gte, lte)
         const residenceCalls = await getCallsByDate(residenceToken, gte, lte)
@@ -63,7 +66,7 @@ async function masterUpdateData(gte, lte) {
     
                 if (Array.isArray(envyboxCalls)) {
                     let envyCallKey = envyboxCalls.find((call) => {
-                        return call.phone === lead.phone
+                        return call.phone === lead.phone.replace(/\D/g, '')
                     })
 
                     if (envyCallKey) {
@@ -90,13 +93,14 @@ async function masterUpdateData(gte, lte) {
                     residenceKey.forEach((item) => {
                         lead.statuses.push(item.status)
                         lead.offerPrice += ['hold', 'confirmed', 'refused'].includes(item.status) ? item?.price?.offer : 0
-                    })
 
-                    // если с зарплатананя => звонки не сомг найти и сопоставить бркоера (но был перевод в residence) тогда из лидов возьмем
-                    if (lead.isResidence === true && lead.broker === null) {
-                        console.log(`нашелся лид без определеного но с переводом ${lead.phone} сопоставим ему ${item?.userId?.name}`)
-                        lead.broker = item?.userId?.name || null
-                    }
+                        // если с зарплатананя => звонки не сомг найти и сопоставить бркоера (но был перевод в residence) тогда из лидов возьмем
+                        if (lead.isResidence === true && lead.broker === null) {
+                            console.log(`нашелся лид без определеного но с переводом ${lead.phone} сопоставим ему ${item?.userId?.name}`)
+                            lead.broker = item?.userId?.name || null
+                        }
+
+                    })
 
                 }
     
