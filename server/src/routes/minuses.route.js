@@ -27,15 +27,23 @@ minusesRoute.get('/byDate', async (req, res) => {
 
             const isIncludesHold = lead.statuses.includes('hold') || lead.statuses.includes('confirmed') || lead.statuses.includes('refused')
 
+            let priceToInput
+
+            if (lead.isAuto === true) {
+                priceToInput = 5
+            } else {
+                priceToInput = lead.stagePrice
+            }
+
             if (aggregatedData[lead.broker]) {
                 aggregatedData[lead.broker].countInputs += 1
                 aggregatedData[lead.broker].countLeads += lead.isResidence ? 1 : 0
                 aggregatedData[lead.broker].offerPrice += lead.offerPrice
                 aggregatedData[lead.broker].countHold += isIncludesHold ? 1 : 0,
-                aggregatedData[lead.broker].totalMinuses += lead.finallyLeadPrice
-                aggregatedData[lead.broker].countNew += lead.finallyLeadCode === 'new' ? 1 : 0
-                aggregatedData[lead.broker].countBase += lead.finallyLeadCode === 'base' ? 1 : 0
-                aggregatedData[lead.broker].countAuto += lead.finallyLeadCode === 'auto' ? 1 : 0
+                aggregatedData[lead.broker].totalMinuses += priceToInput
+                aggregatedData[lead.broker].countNew += lead.stageCode === 'new' && lead.isAuto === false ? 1 : 0
+                aggregatedData[lead.broker].countBase += lead.stageCode === 'base' && lead.isAuto === false ? 1 : 0
+                aggregatedData[lead.broker].countAuto += lead.isAuto === true ? 1 : 0
 
             } else {
                 aggregatedData[lead.broker] = {
@@ -44,10 +52,10 @@ minusesRoute.get('/byDate', async (req, res) => {
                     countLeads: lead.isResidence ? 1 : 0,
                     offerPrice: lead.offerPrice,
                     countHold: isIncludesHold ? 1 : 0,
-                    totalMinuses: lead.finallyLeadPrice,
-                    countNew: lead.finallyLeadCode === 'new' ? 1 : 0,
-                    countBase: lead.finallyLeadCode === 'base' ? 1 : 0,
-                    countAuto: lead.finallyLeadCode === 'auto' ? 1 : 0,
+                    totalMinuses: priceToInput,
+                    countNew: lead.stageCode === 'new' && lead.isAuto === false ? 1 : 0,
+                    countBase: lead.stageCode === 'base' && lead.isAuto === false ? 1 : 0,
+                    countAuto: lead.isAuto === true ? 1 : 0
                 }
             }
         })

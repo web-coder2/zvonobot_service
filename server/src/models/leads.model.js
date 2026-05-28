@@ -8,22 +8,17 @@ const LeadsSchema = new Schema({
     mailingName: String,
     mailingId: Number,
     phone: String,
-    finallyLeadCode: {
-        type: String,
-        enum: ['base', 'new', 'auto']
-    },
-    finallyLeadPrice: {
-        type: Number,
-        enum: [5, 10]
-    },
+
     isResidence: Boolean,
     broker: String,
     offerPrice: Number,
     statuses: [String],
-    // employeeId: String,
-    // uisInfo: {
-    //     type: Schema.Types.Mixed
-    // }
+
+    stage: String,
+    stageCode: String,
+    stagePrice: Number,
+    isAuto: Boolean,
+    isFoundInEnvy: Boolean
 })
 
 LeadsSchema.statics.updateLead = async function (data) {
@@ -35,14 +30,15 @@ LeadsSchema.statics.updateLead = async function (data) {
                     startedAt: data.startedAt,
                     mailingName: data.mailingName,
                     mailingId: data.mailingId,
-                    finallyLeadCode: data.finallyLeadCode,
-                    finallyLeadPrice: data.finallyLeadPrice,
+                    isAuto: data.isAuto,
                     isResidence: data.isResidence,
-                    // employeeId: data.employeeId,
                     broker: data.broker,
                     offerPrice: data.offerPrice,
                     statuses: data.statuses,
-                    // uisInfo: data.uisInfo
+                    stageCode: data.stageCode,
+                    stagePrice: data.stagePrice,
+                    stage: data.stage,
+                    isFoundInEnvy: data.isFoundInEnvy
                 }
             },
             { upsert: true }

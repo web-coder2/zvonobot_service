@@ -32,7 +32,8 @@ async function masterUpdateData(gte, lte) {
         // маисив 4 расылок дял теста сервиса чтобы долго не ждать
         // let shortMailingsArray = zvonobotMailings.slice(1, 10)
 
-        // const brokers = await getBrokers(residenceToken)
+        const brokers = await getBrokers(residenceToken)
+
         // const uisCalls = await getUIScalls(uisToken, gte, lte, brokers)
 
         const residenceLeads = await getLeads(residenceToken, gte, lte)
@@ -41,10 +42,10 @@ async function masterUpdateData(gte, lte) {
 
         for (let mailing of zvonobotMailings) {
         // for (let mailing of shortMailingsArray) {
-            console.log(`идет итерация по расылки ${mailing.mailingName}:${mailing.mailingId}`)
+            // console.log(`идет итерация по расылки ${mailing.mailingName}:${mailing.mailingId}`)
             const fullMailingInfo = await prepaingMailing(mailing, zvonobotToken)
             zvonobotMailingsLeads.push(...fullMailingInfo.leadsInMailing)
-            console.log(`получено с расылки ${fullMailingInfo.leadsInMailing.length} лидов`)
+            // console.log(`получено с расылки ${fullMailingInfo.leadsInMailing.length} лидов`)
             const miniResult = await mailingsModel.updateData(fullMailingInfo)
 
             if (fullMailingInfo.mailingStatus === 'finished' || fullMailingInfo.mailingStatus === 'stopped') {
@@ -70,21 +71,20 @@ async function masterUpdateData(gte, lte) {
                     })
 
                     if (envyCallKey) {
-                        lead.leadCode2 = envyCallKey.stageCode
-                        lead.leadPrice2 = envyCallKey.callPrice
+                        lead.stageCode = envyCallKey.stageCode
+                        lead.stagePrice = envyCallKey.callPrice
+                        lead.stage = envyCallKey.stage
+                        lead.isFoundInEnvy = true
+                    } else {
+                        lead.stageCode = 'new'
+                        lead.stagePrice = 10
+                        lead.stage = 'Новый клиент'
+                        lead.isFoundInEnvy = false
                     }
                 }
-    
-
-                // if (leadCallKey) {
-                //     lead.broker = leadCallKey.broker
-                //     lead.employeeId = leadCallKey.employeeId
-                //     lead.uisInfo = leadCallKey.uisInfo
-                // }
 
                 if (residenceCallKey) {
                     lead.broker = residenceCallKey.user
-                    lead.state = residenceCallKey.state
                 }
     
                 if (residenceKey && residenceKey.length > 0) {
@@ -103,23 +103,13 @@ async function masterUpdateData(gte, lte) {
                     })
 
                 }
-    
-                if (lead.leadCode === 'auto') {
-                    // если это из расылки по авто
-                    lead.finallyLeadCode = 'auto'
-                    lead.finallyLeadPrice = 5
-                } else if (lead.leadCode !== 'auto' && lead.leadCode2) {
-                    // если расылка не на авто и есть инфа от EnvyBox
-                    lead.finallyLeadCode = lead.leadCode2
-                    lead.finallyLeadPrice = lead.leadPrice2
-                } else {
-                    // если не авто и нет инфы от EnvyBox тогда дефолт значения
-                    lead.finallyLeadCode = lead.leadCode
-                    lead.finallyLeadPrice = lead.leadPrice
-                }
+
             })
 
             for (let lead of fullMailingInfo.leadsInMailing) {
+
+                console.log(lead, '!@*^#^&!@%*&#&!(@^*(!@(&*#P%*!@(*$(!@*&%$^(!@($&%^!@($(8')
+
                 const result = await leadsModel.updateLead(lead)
             }
 

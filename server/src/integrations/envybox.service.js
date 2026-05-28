@@ -98,16 +98,14 @@ async function getEnvyBoxCalls(gte, lte) {
         response.data.result.forEach((call) => {
             let phone = call.phone.replace(/\D/g, '')
             let stage = call.stage
+            let employee_id = call.employee_id
             let stageCode
             let callPrice
 
             if (stage === 'Существующий клиент') {
                 stageCode = 'base'
                 callPrice = 5
-            } else if (stage === 'Новый клиент') {
-                stageCode = 'new'
-                callPrice = 10
-            } else if (stage === 'Еще не взяли в работу') {
+            } else {
                 stageCode = 'new'
                 callPrice = 10
             }
@@ -116,7 +114,8 @@ async function getEnvyBoxCalls(gte, lte) {
                 phone,
                 stage,
                 stageCode,
-                callPrice
+                callPrice,
+                employee_id
             })
         })
 
