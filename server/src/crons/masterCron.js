@@ -78,7 +78,7 @@ async function masterUpdateData(gte, lte) {
                     } else {
                         lead.stageCode = 'new'
                         lead.stagePrice = 10
-                        lead.stage = 'Новый клиент'
+                        lead.stage = 'Новый (нет в envy)'
                         lead.isFoundInEnvy = false
                     }
                 }
