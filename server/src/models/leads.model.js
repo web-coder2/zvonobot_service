@@ -18,6 +18,7 @@ const LeadsSchema = new Schema({
     stageCode: String,
     stagePrice: Number,
     isAuto: Boolean,
+    envyCallId: Number,
     isFoundInEnvy: Boolean
 })
 
@@ -38,6 +39,7 @@ LeadsSchema.statics.updateLead = async function (data) {
                     stageCode: data.stageCode,
                     stagePrice: data.stagePrice,
                     stage: data.stage,
+                    envyCallId: data.envyCallId,
                     isFoundInEnvy: data.isFoundInEnvy
                 }
             },

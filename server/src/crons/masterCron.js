@@ -43,7 +43,7 @@ async function masterUpdateData(gte, lte) {
         for (let mailing of zvonobotMailings) {
         // for (let mailing of shortMailingsArray) {
             // console.log(`идет итерация по расылки ${mailing.mailingName}:${mailing.mailingId}`)
-            const fullMailingInfo = await prepaingMailing(mailing, zvonobotToken)
+            const fullMailingInfo = await prepaingMailing(mailing, zvonobotToken) || []
             zvonobotMailingsLeads.push(...fullMailingInfo.leadsInMailing)
             // console.log(`получено с расылки ${fullMailingInfo.leadsInMailing.length} лидов`)
             const miniResult = await mailingsModel.updateData(fullMailingInfo)
@@ -74,11 +74,13 @@ async function masterUpdateData(gte, lte) {
                         lead.stageCode = envyCallKey.stageCode
                         lead.stagePrice = envyCallKey.callPrice
                         lead.stage = envyCallKey.stage
+                        lead.envyCallId = envyCallKey.envyCallId
                         lead.isFoundInEnvy = true
                     } else {
                         lead.stageCode = 'new'
                         lead.stagePrice = 10
                         lead.stage = 'Новый (нет в envy)'
+                        lead.envyCallId = null
                         lead.isFoundInEnvy = false
                     }
                 }

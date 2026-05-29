@@ -25,13 +25,17 @@ finishedMailingsSchema.statics.getByDate = async function(gte, lte) {
 
 finishedMailingsSchema.statics.update = async function(data) {
     try {
-        const newFinishedMailing = new this({
-            mailingDate: data.mailingDate,
-            mailingId: data.mailingId,
-            mailingName: data.mailingName,
-            mailingStatus: data.mailingStatus,
-        })
-        const result = newFinishedMailing.save()
+        const result = await this.findOneAndUpdate(
+            { mailingDate: data.mailingDate, mailingId: data.mailingId },
+            {
+                $set: {
+                    mailingName: data.mailingName,
+                    mailingStatus: data.mailingStatus,
+                }
+            },
+            { upsert: true }
+        )
+
         return result
     } catch (e) {
         console.log(`ошибка сохранения заврешеной расылки ${e.message}`)

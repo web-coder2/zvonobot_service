@@ -27,44 +27,48 @@
             <input placeholder="lte" v-model="lte" type="date">
             <button @click="getLeads">Искать</button>
             <button @click="getNullLeads" style="background-color: rgb(27, 106, 27); margin-left: 20px;">скачать неопределные</button>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Дата</th>
-                        <td>Время</td>
-                        <th>Телефон</th>
-                        <th>Брокер</th>
-                        <th>Расылка</th>
-                        <th>ID расылки</th>
-                        <th>Трансфер ?</th>
-                        <th>stage</th>
-                        <th>stageCode</th>
-                        <th>stagePrice</th>
-                        <th>isAuto</th>
-                        <th>isFoundInEnvy</th>
-                        <th>Оффер</th>
-                        <th>Статусы</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(lead, idx) in leadsTable">
-                        <td>{{ lead.datedAt }}</td>
-                        <td>{{ formater(lead.startedAt) }}</td>
-                        <td>{{ lead.phone }}</td>
-                        <td>{{ lead.broker }}</td>
-                        <td>{{ lead.mailingName }}</td>
-                        <td>{{ lead.mailingId }}</td>
-                        <td>{{ lead.isResidence }}</td>
-                        <td>{{ lead.stage }}</td>
-                        <td>{{ lead.stageCode }}</td>
-                        <td>{{ lead.stagePrice }}</td>
-                        <td>{{ lead.isAuto }}</td>
-                        <td>{{ lead.isFoundInEnvy }}</td>
-                        <td>{{ lead.offerPrice }}</td>
-                        <td>{{ lead.statuses }}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div style="overflow-x: scroll;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <td>Время</td>
+                            <th>Телефон</th>
+                            <th>Брокер</th>
+                            <th>Расылка</th>
+                            <th>ID расылки</th>
+                            <th>Трансфер ?</th>
+                            <th>stage</th>
+                            <th>stageCode</th>
+                            <th>stagePrice</th>
+                            <th>isAuto</th>
+                            <th>envyCallId</th>
+                            <th>isFoundInEnvy</th>
+                            <th>Оффер</th>
+                            <th>Статусы</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(lead, idx) in leadsTable">
+                            <td>{{ lead.datedAt }}</td>
+                            <td>{{ formater(lead.startedAt) }}</td>
+                            <td>{{ lead.phone }}</td>
+                            <td>{{ lead.broker }}</td>
+                            <td>{{ lead.mailingName }}</td>
+                            <td>{{ lead.mailingId }}</td>
+                            <td :style="{ 'color': lead.isResidence ? 'green' : 'blue' }">{{ lead.isResidence }}</td>
+                            <td>{{ lead.stage }}</td>
+                            <td>{{ lead.stageCode }}</td>
+                            <td>{{ lead.stagePrice }}</td>
+                            <td :style="{ 'color': lead.isAuto ? 'blue' : 'red' }">{{ lead.isAuto }}</td>
+                            <td>{{ lead.envyCallId }}</td>
+                            <td :style="{ 'color': lead.isFoundInEnvy ? 'green' : 'red' }">{{ lead.isFoundInEnvy }}</td>
+                            <td>{{ lead.offerPrice }}</td>
+                            <td>{{ lead.statuses }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </body>
