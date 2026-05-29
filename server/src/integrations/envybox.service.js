@@ -99,6 +99,8 @@ async function getEnvyBoxCalls(gte, lte) {
             let phone = call.phone.replace(/\D/g, '')
             let stage = call.stage
             let envyCallId = call.id
+            let inbox_type_id = call.inbox_type_id
+
             let stageCode
             let callPrice
 
@@ -110,20 +112,23 @@ async function getEnvyBoxCalls(gte, lte) {
                 callPrice = 10
             }
 
-            console.log(call, '!@(#!*@#^*(!@^')
+            // console.log(call, '&&*&&***&&&^&%*(&')
 
             minimysedData.push({
                 phone,
                 stage,
                 stageCode,
+                inbox_type_id,
                 callPrice,
                 envyCallId
             })
         })
 
         minimysedData = minimysedData.filter((call) => {
-            return call.inbox_type_id !== '485733' // если инбокс тай айди не равен типу для "звонок"
+            return call.inbox_type_id !== 485733 // если инбокс тай айди не равен типу для "звонок"
         })
+
+        console.log(minimysedData.length, 'minimysedData 111111')
 
         // TODO либо использовать обхект params другй котоырй использует все типы кромен "звонок"
 
