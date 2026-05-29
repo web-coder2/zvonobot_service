@@ -26,7 +26,7 @@ async function masterUpdateData(gte, lte) {
 
         const zvonobotMailingsLeads = []
 
-        const zvonobotMailings = await getZvonobotMailings(zvonobotToken, gte, lte)
+        const zvonobotMailings = await getZvonobotMailings(zvonobotToken, gte, lte) || []
         console.log('Список активных ддля обработки расылок ....', zvonobotMailings)
 
         // маисив 4 расылок дял теста сервиса чтобы долго не ждать

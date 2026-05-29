@@ -93,6 +93,7 @@ async function getZvonobotMailings(token, gte, lte) {
 
     } catch (e) {
         console.log(`ошибка при получение расылок звонобота ${e.message}`)
+        return []
     }
 }
 
