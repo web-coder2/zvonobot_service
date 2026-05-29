@@ -110,6 +110,8 @@ async function getEnvyBoxCalls(gte, lte) {
                 callPrice = 10
             }
 
+            console.log(call, '!@(#!*@#^*(!@^')
+
             minimysedData.push({
                 phone,
                 stage,
@@ -118,6 +120,12 @@ async function getEnvyBoxCalls(gte, lte) {
                 envyCallId
             })
         })
+
+        minimysedData = minimysedData.filter((call) => {
+            return call.inbox_type_id !== '485733' // если инбокс тай айди не равен типу для "звонок"
+        })
+
+        // TODO либо использовать обхект params другй котоырй использует все типы кромен "звонок"
 
         return minimysedData
 
